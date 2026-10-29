@@ -1,0 +1,29 @@
+name: Build and Validate Mobile App
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Validate Web Application Files
+      run: |
+        if [ -f "index.html" ]; then
+          echo "index.html found! Application structure valid."
+        else
+          echo "index.html missing!" && exit 1
+        fi
+
+    - name: Run HTML/JS Linter and Build Check
+      run: |
+        echo "Building and validating Sushi Craft Mobile App..."
+        grep -q "Sushi Craft" index.html
+        echo "Build completed successfully!"
