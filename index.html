@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sushi Craft - Master Chef</title>
+    <script src="cordova.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4ece1;
+            --primary-color: #d9534f;
+            --accent-color: #2e7d32;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            min-height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .game-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+        }
+
+        .order-section {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffa000;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .order-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #b78103;
+        }
+
+        .ingredients-needed {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .plate-area {
+            min-height: 70px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+            flex-wrap: wrap;
+        }
+
+        .ingredient-chip {
+            background-color: #e0e0e0;
+            padding: 6px 10px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .grid-ingredients {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .btn-ingredient {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 12px 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background-color 0.1s;
+        }
+
+        .btn-ingredient:active {
+            background-color: #e0e0e0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-serve { background-color: var(--accent-color); }
+        .btn-clear { background-color: var(--primary-color); }
+
+        .btn-action:active {
+            opacity: 0.9;
+        }
+
+        .message-box {
+            text-align: center;
+            font-weight: 700;
+            height: 20px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .success { color: var(--accent-color); }
+        .error { color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="stat-box">
+            <div class="stat-label">Score</div>
+            <div class="stat-value" id="score">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Customer</div>
+            <div class="stat-value" id="customer">#1</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Time Left</div>
+            <div class="stat-value" id="timer">60s</div>
+        </div>
+    </div>
+
+    <div class="game-card">
+        <div class="order-section">
+            <div class="order-title">Current Order: <span id="target-sushi-name">Loading...</span></div>
+            <div class="ingredients-needed" id="target-ingredients"></div>
+        </div>
+
+        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">Prep Board:</div>
+        <div class="plate-area" id="plate">
+            <span style="color: #aaa; font-size: 0.85rem;" id="empty-msg">Select ingredients below...</span>
+        </div>
+
+        <div class="grid-ingredients">
+            <button class="btn-ingredient" onclick="addIngredient('Rice')">🍚 Rice</button>
+            <button class="btn-ingredient" onclick="addIngredient('Nori')">⬛ Nori</button>
+            <button class="btn-ingredient" onclick="addIngredient('Salmon')">🍣 Salmon</button>
+            <button class="btn-ingredient" onclick="addIngredient('Tuna')">🐟 Tuna</button>
+            <button class="btn-ingredient" onclick="addIngredient('Avocado')">🥑 Avocado</button>
+            <button class="btn-ingredient" onclick="addIngredient('Cucumber')">🥒 Cucumber</button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-clear" onclick="clearPlate()">Clear</button>
+            <button class="btn-action btn-serve" onclick="serveOrder()">Serve!</button>
+        </div>
+
+        <div class="message-box" id="message"></div>
+    </div>
+
+    <script>
+        const recipes = [
+            { name: "Salmon Nigiri", ingredients: ["Rice", "Salmon"] },
+            { name: "Tuna Roll", ingredients: ["Rice", "Nori", "Tuna"] },
+            { name: "California Roll", ingredients: ["Rice", "Nori", "Avocado"] },
+            { name: "Veggie Roll", ingredients: ["Rice", "Nori", "Avocado", "Cucumber"] },
+            { name: "Salmon Supreme", ingredients: ["Rice", "Nori", "Salmon", "Avocado"] }
+        ];
+
+        let currentRecipe = {};
+        let currentPlate = [];
+        let score = 0;
+        let customerCount = 1;
+        let timeLeft = 60;
+        let timerInterval;
+
+        function startGame() {
+            score = 0;
+            customerCount = 1;
+            timeLeft = 60;
+            document.getElementById('score').innerText = score;
+            document.getElementById('customer').innerText = "#" + customerCount;
+            nextOrder();
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft + "s";
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's Up! Final Score: " + score);
+                    startGame();
+                }
+            }, 1000);
+        }
+
+        function nextOrder() {
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            currentRecipe = recipes[randomIndex];
+            document.getElementById('target-sushi-name').innerText = currentRecipe.name;
+            
+            const targetDiv = document.getElementById('target-ingredients');
+            targetDiv.innerHTML = '';
+            currentRecipe.ingredients.forEach(ing => {
+                const chip = document.createElement('span');
+                chip.className = 'ingredient-chip';
+                chip.innerText = ing;
+                targetDiv.appendChild(chip);
+            });
+            clearPlate();
+        }
+
+        function addIngredient(ing) {
+            currentPlate.push(ing);
+            renderPlate();
+        }
+
+        function clearPlate() {
+            currentPlate = [];
+            renderPlate();
+        }
+
+        function renderPlate() {
+            const plateDiv = document.getElementById('plate');
+            plateDiv.innerHTML = '';
+            if(currentPlate.length === 0) {
+                plateDiv.innerHTML = '<span style="color: #aaa; font-size: 0.85rem;">Select ingredients below...</span>';
+                return;
+            }
+            currentPlate.forEach(ing => {
+                const chip = document.createElement('span');
+                chip.className = 'ingredient-chip';
+                chip.innerText = ing;
+                plateDiv.appendChild(chip);
+            });
+        }
+
+        function serveOrder() {
+            const msgBox = document.getElementById('message');
+            const isCorrect = currentPlate.length === currentRecipe.ingredients.length &&
+                              currentPlate.every((val, index) => val === currentRecipe.ingredients[index]);
+
+            if (isCorrect) {
+                score += 20;
+                msgBox.className = "message-box success";
+                msgBox.innerText = "+20 Pts! Perfect!";
+                customerCount++;
+                document.getElementById('score').innerText = score;
+                document.getElementById('customer').innerText = "#" + customerCount;
+                setTimeout(() => {
+                    msgBox.innerText = "";
+                    nextOrder();
+                }, 1000);
+            } else {
+                score = Math.max(0, score - 5);
+                msgBox.className = "message-box error";
+                msgBox.innerText = "-5 Pts! Wrong Recipe!";
+                document.getElementById('score').innerText = score;
+            }
+        }
+
+        window.onload = startGame;
+    </script>
+</body>
+</html>
