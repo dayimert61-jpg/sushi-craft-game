@@ -1,17 +1,19 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sushi Craft - Master Chef</title>
+    <title>Sushi Craft Pro - Japanese Gourmet Kitchen</title>
     <script src="cordova.js"></script>
     <style>
         :root {
-            --bg-color: #f4ece1;
-            --primary-color: #d9534f;
-            --accent-color: #2e7d32;
-            --card-bg: #ffffff;
-            --text-color: #333333;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --accent-gold: #ffb703;
+            --primary-red: #e63946;
+            --success-green: #2a9d8f;
+            --text-light: #f1faee;
+            --chip-bg: #3d3d3d;
         }
 
         * {
@@ -22,7 +24,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-light);
             margin: 0;
             padding: 12px;
             display: flex;
@@ -36,9 +38,10 @@
             width: 100%;
             max-width: 480px;
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid #444;
+            border-radius: 16px;
+            padding: 12px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -50,41 +53,44 @@
         }
 
         .stat-label {
-            font-size: 0.75rem;
-            color: #666;
+            font-size: 0.7rem;
+            color: #aaa;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .stat-value {
             font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
+            font-weight: 800;
+            color: var(--accent-gold);
         }
 
         .game-card {
             width: 100%;
             max-width: 480px;
             background: var(--card-bg);
-            border-radius: 12px;
+            border: 1px solid #444;
+            border-radius: 16px;
             padding: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             margin-bottom: 12px;
         }
 
         .order-section {
-            background-color: #fff8e1;
-            border-left: 5px solid #ffa000;
-            padding: 12px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #3a2e1d, #2a2216);
+            border: 1px solid var(--accent-gold);
+            padding: 14px;
+            border-radius: 12px;
             margin-bottom: 15px;
             text-align: center;
+            position: relative;
         }
 
         .order-title {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: #b78103;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
         }
 
         .ingredients-needed {
@@ -96,25 +102,39 @@
         }
 
         .plate-area {
-            min-height: 70px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
+            min-height: 80px;
+            border: 2px dashed #555;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 15px;
-            background-color: #fafafa;
+            background-color: #222;
             flex-wrap: wrap;
         }
 
         .ingredient-chip {
-            background-color: #e0e0e0;
-            padding: 6px 10px;
-            border-radius: 16px;
+            background-color: var(--chip-bg);
+            border: 1px solid #555;
+            color: var(--text-light);
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grid-title {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .grid-ingredients {
@@ -125,18 +145,21 @@
         }
 
         .btn-ingredient {
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
+            background: #383838;
+            color: #fff;
+            border: 1px solid #555;
             padding: 12px 4px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.85rem;
-            transition: background-color 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: all 0.1s;
         }
 
         .btn-ingredient:active {
-            background-color: #e0e0e0;
+            transform: scale(0.95);
+            background-color: #555;
         }
 
         .action-buttons {
@@ -146,32 +169,36 @@
 
         .btn-action {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1rem;
             cursor: pointer;
             color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .btn-serve { background-color: var(--accent-color); }
-        .btn-clear { background-color: var(--primary-color); }
+        .btn-serve { background-color: var(--success-green); }
+        .btn-clear { background-color: var(--primary-red); }
 
         .btn-action:active {
-            opacity: 0.9;
+            opacity: 0.85;
+            transform: scale(0.98);
         }
 
         .message-box {
             text-align: center;
-            font-weight: 700;
-            height: 20px;
+            font-weight: 800;
+            height: 24px;
             margin-top: 10px;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
-        .success { color: var(--accent-color); }
-        .error { color: var(--primary-color); }
+        .success { color: #4adb8a; }
+        .error { color: #ff6b6b; }
     </style>
 </head>
 <body>
@@ -182,26 +209,31 @@
             <div class="stat-value" id="score">0</div>
         </div>
         <div class="stat-box">
+            <div class="stat-label">Combo</div>
+            <div class="stat-value" id="combo" style="color: #4adb8a;">x1</div>
+        </div>
+        <div class="stat-box">
             <div class="stat-label">Customer</div>
             <div class="stat-value" id="customer">#1</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Time Left</div>
-            <div class="stat-value" id="timer">60s</div>
+            <div class="stat-label">Time</div>
+            <div class="stat-value" id="timer" style="color: var(--primary-red);">60s</div>
         </div>
     </div>
 
     <div class="game-card">
         <div class="order-section">
-            <div class="order-title">Current Order: <span id="target-sushi-name">Loading...</span></div>
+            <div class="order-title">Customer Order: <span id="target-sushi-name">Loading...</span></div>
             <div class="ingredients-needed" id="target-ingredients"></div>
         </div>
 
-        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">Prep Board:</div>
+        <div class="grid-title">Prep Table (Your Roll):</div>
         <div class="plate-area" id="plate">
-            <span style="color: #aaa; font-size: 0.85rem;" id="empty-msg">Select ingredients below...</span>
+            <span style="color: #777; font-size: 0.85rem;" id="empty-msg">Tap ingredients below to start crafting...</span>
         </div>
 
+        <div class="grid-title">Kitchen Ingredients:</div>
         <div class="grid-ingredients">
             <button class="btn-ingredient" onclick="addIngredient('Rice')">🍚 Rice</button>
             <button class="btn-ingredient" onclick="addIngredient('Nori')">⬛ Nori</button>
@@ -209,6 +241,9 @@
             <button class="btn-ingredient" onclick="addIngredient('Tuna')">🐟 Tuna</button>
             <button class="btn-ingredient" onclick="addIngredient('Avocado')">🥑 Avocado</button>
             <button class="btn-ingredient" onclick="addIngredient('Cucumber')">🥒 Cucumber</button>
+            <button class="btn-ingredient" onclick="addIngredient('Soy Sauce')">🥢 Soy Sauce</button>
+            <button class="btn-ingredient" onclick="addIngredient('Wasabi')">🟢 Wasabi</button>
+            <button class="btn-ingredient" onclick="addIngredient('Green Tea')">🍵 Green Tea</button>
         </div>
 
         <div class="action-buttons">
@@ -221,25 +256,31 @@
 
     <script>
         const recipes = [
-            { name: "Salmon Nigiri", ingredients: ["Rice", "Salmon"] },
-            { name: "Tuna Roll", ingredients: ["Rice", "Nori", "Tuna"] },
-            { name: "California Roll", ingredients: ["Rice", "Nori", "Avocado"] },
-            { name: "Veggie Roll", ingredients: ["Rice", "Nori", "Avocado", "Cucumber"] },
-            { name: "Salmon Supreme", ingredients: ["Rice", "Nori", "Salmon", "Avocado"] }
+            { name: "Salmon Nigiri Set", ingredients: ["Rice", "Salmon", "Soy Sauce"] },
+            { name: "Tuna Spicy Roll", ingredients: ["Rice", "Nori", "Tuna", "Wasabi"] },
+            { name: "California Special", ingredients: ["Rice", "Nori", "Avocado", "Soy Sauce"] },
+            { name: "Veggie Fresh Roll", ingredients: ["Rice", "Nori", "Avocado", "Cucumber"] },
+            { name: "Supreme Combo", ingredients: ["Rice", "Nori", "Salmon", "Avocado", "Green Tea"] },
+            { name: "Wasabi Tuna Delight", ingredients: ["Rice", "Tuna", "Wasabi", "Green Tea"] },
+            { name: "Classic Salmon Roll", ingredients: ["Rice", "Nori", "Salmon"] },
+            { name: "Chef's Tasting Plate", ingredients: ["Rice", "Salmon", "Tuna", "Soy Sauce", "Wasabi"] }
         ];
 
         let currentRecipe = {};
         let currentPlate = [];
         let score = 0;
+        let combo = 1;
         let customerCount = 1;
         let timeLeft = 60;
         let timerInterval;
 
         function startGame() {
             score = 0;
+            combo = 1;
             customerCount = 1;
             timeLeft = 60;
             document.getElementById('score').innerText = score;
+            document.getElementById('combo').innerText = "x" + combo;
             document.getElementById('customer').innerText = "#" + customerCount;
             nextOrder();
             
@@ -249,7 +290,7 @@
                 document.getElementById('timer').innerText = timeLeft + "s";
                 if(timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    alert("Time's Up! Final Score: " + score);
+                    alert("⏰ Time's Up Master Chef!\nFinal Score: " + score + " Pts\nTotal Customers Served: " + (customerCount - 1));
                     startGame();
                 }
             }, 1000);
@@ -285,7 +326,7 @@
             const plateDiv = document.getElementById('plate');
             plateDiv.innerHTML = '';
             if(currentPlate.length === 0) {
-                plateDiv.innerHTML = '<span style="color: #aaa; font-size: 0.85rem;">Select ingredients below...</span>';
+                plateDiv.innerHTML = '<span style="color: #777; font-size: 0.85rem;">Tap ingredients below to start crafting...</span>';
                 return;
             }
             currentPlate.forEach(ing => {
@@ -302,11 +343,14 @@
                               currentPlate.every((val, index) => val === currentRecipe.ingredients[index]);
 
             if (isCorrect) {
-                score += 20;
+                const pointsEarned = 20 * combo;
+                score += pointsEarned;
+                combo++;
                 msgBox.className = "message-box success";
-                msgBox.innerText = "+20 Pts! Perfect!";
+                msgBox.innerText = "+" + pointsEarned + " Pts! Perfect Combo x" + combo + "!";
                 customerCount++;
                 document.getElementById('score').innerText = score;
+                document.getElementById('combo').innerText = "x" + combo;
                 document.getElementById('customer').innerText = "#" + customerCount;
                 setTimeout(() => {
                     msgBox.innerText = "";
@@ -314,9 +358,11 @@
                 }, 1000);
             } else {
                 score = Math.max(0, score - 5);
+                combo = 1;
                 msgBox.className = "message-box error";
-                msgBox.innerText = "-5 Pts! Wrong Recipe!";
+                msgBox.innerText = "-5 Pts! Order Mistake!";
                 document.getElementById('score').innerText = score;
+                document.getElementById('combo').innerText = "x" + combo;
             }
         }
 
